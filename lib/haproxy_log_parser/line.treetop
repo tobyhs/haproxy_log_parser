@@ -4,7 +4,7 @@ module HAProxyLogParser
       syslog_portion:([^\[]+ '[' integer ']: ')
       client_ip:ip4_address ':' client_port:integer ' '
       '[' accept_date '] '
-      frontend_name:proxy_name ' '
+      frontend_name:proxy_name transport_mode:'~'? ' '
       backend_name:proxy_name '/' server_name ' '
       tq:integer '/' tw:integer '/' tc:integer '/' tr:integer '/' tt:integer ' '
       status_code:integer ' '

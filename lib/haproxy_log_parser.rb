@@ -21,8 +21,8 @@ module HAProxyLogParser
 
       entry = Entry.new
       [
-        :client_ip, :frontend_name, :backend_name, :server_name,
-        :termination_state
+        :client_ip, :frontend_name, :transport_mode,
+        :backend_name, :server_name, :termination_state
       ].each do |field|
         entry.send("#{field}=", result.send(field).text_value)
       end

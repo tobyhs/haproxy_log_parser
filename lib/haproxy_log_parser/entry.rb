@@ -16,6 +16,11 @@ module HAProxyLogParser
     attr_accessor :frontend_name
 
     # @return [String]
+    #   '~' if SSL, '' otherwise (HAProxy 1.5 adds a '~' suffix to the frontend
+    #   name if request went through SSL)
+    attr_accessor :transport_mode
+
+    # @return [String]
     attr_accessor :backend_name
 
     # @return [String]
@@ -80,5 +85,10 @@ module HAProxyLogParser
 
     # @return [String]
     attr_accessor :http_request
+
+    # return [true, false] true if and only if request was SSL
+    def ssl?
+      @transport_mode == '~'
+    end
   end
 end

@@ -11,6 +11,7 @@ describe HAProxyLogParser do
       entry.client_port.should == 34028
       entry.accept_date.should == Time.local(2011, 8, 9, 20, 30, 46, 429)
       entry.frontend_name.should == 'proxy-out'
+      expect(entry).to be_ssl
       entry.backend_name.should == 'proxy-out'
       entry.server_name.should == 'cache1'
       entry.tq.should == 1
@@ -41,6 +42,7 @@ describe HAProxyLogParser do
       entry.client_port.should == 50679
       entry.accept_date.should == Time.local(2012, 5, 21, 1, 35, 46, 146)
       entry.frontend_name.should == 'webapp'
+      expect(entry).to_not be_ssl
       entry.backend_name.should == 'webapp_backend'
       entry.server_name.should == 'web09'
       entry.tq.should == 27
