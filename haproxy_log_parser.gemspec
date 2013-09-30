@@ -5,6 +5,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/tobyhs/haproxy_log_parser'
   s.summary = 'Parser for HAProxy logs in the HTTP log format'
   s.description = s.summary
+  s.license = 'MIT'
 
   s.add_dependency 'treetop'
 
