@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'treetop'
 
-  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rspec', '~> 2.13'
 
   s.files = Dir.glob('lib/**/*') + [
     'README.rdoc',
