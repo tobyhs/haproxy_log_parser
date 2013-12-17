@@ -15,8 +15,8 @@ module HAProxyLogParser
       actconn:integer '/' feconn:integer '/' beconn:integer '/'
         srv_conn:integer '/' retries:integer ' '
       srv_queue:integer '/' backend_queue:integer ' '
-      '{' captured_request_headers:captured_headers '} '
-      '{' captured_response_headers:captured_headers '} '
+      captured_request_headers:('{' headers:captured_headers '} ')?
+      captured_response_headers:('{' headers:captured_headers '} ')?
       '"' http_request:[^"]+ '"'
       "\n"?
     end
@@ -54,5 +54,3 @@ module HAProxyLogParser
     end
   end
 end
-
-# vim:ai

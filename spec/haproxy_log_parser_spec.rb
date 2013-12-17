@@ -63,7 +63,7 @@ describe HAProxyLogParser do
       expect(entry.srv_queue).to eq(0)
       expect(entry.backend_queue).to eq(0)
       expect(entry.captured_request_headers).to eq(['|| {5F41}', 'http://google.com/', ''])
-      expect(entry.captured_response_headers).to eq(['1270925568', '', ''])
+      expect(entry.captured_response_headers).to eq([])
       expect(entry.http_request).to eq('GET /images/image.gif HTTP/1.1')
     end
 

@@ -39,10 +39,18 @@ module HAProxyLogParser
         cookie = decode_captured_cookie(result.send(field).text_value)
         entry.send("#{field}=", cookie)
       end
+
       [:captured_request_headers, :captured_response_headers].each do |field|
-        headers = decode_captured_headers(result.send(field).text_value)
+        if result.send(field).respond_to?(:headers)
+          headers = decode_captured_headers(
+            result.send(field).headers.text_value
+          )
+        else
+          headers = []
+        end
         entry.send("#{field}=", headers)
       end
+
       entry.http_request = unescape(result.http_request.text_value)
 
       entry
