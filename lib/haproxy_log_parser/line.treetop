@@ -46,7 +46,7 @@ module HAProxyLogParser
     end
 
     rule termination_state
-      [-CSPRIcs] [-RQCHDLT] [-NIDVEO] [-NIUPRD]
+      [-A-Za-z] 4..4
     end
 
     rule captured_headers

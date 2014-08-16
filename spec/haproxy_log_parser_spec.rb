@@ -23,7 +23,7 @@ describe HAProxyLogParser do
       expect(entry.bytes_read).to eq(223)
       expect(entry.captured_request_cookie).to eq({})
       expect(entry.captured_response_cookie).to eq({})
-      expect(entry.termination_state).to eq('----')
+      expect(entry.termination_state).to eq('LR--')
       expect(entry.actconn).to eq(617)
       expect(entry.feconn).to eq(523)
       expect(entry.beconn).to eq(336)
