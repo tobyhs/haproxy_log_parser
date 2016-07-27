@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 3.5.0'
 
   s.files = Dir.glob('lib/**/*') + [
+    'LICENSE',
     'README.md',
     'VERSION',
     'haproxy_log_parser.gemspec'
