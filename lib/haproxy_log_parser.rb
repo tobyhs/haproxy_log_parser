@@ -13,7 +13,7 @@ module HAProxyLogParser
     # Returns an Entry object resulting from the given HAProxy HTTP-format log
     # +line+, or +nil+ if the +line+ appears to be invalid.
     #
-    # @param [String] line a line from an HAProxy log
+    # @param line [String] a line from an HAProxy log
     # @return [Entry, nil]
     def parse(line)
       result = @parser.parse(line)
@@ -59,8 +59,8 @@ module HAProxyLogParser
     # Returns the given string un-escaped. See the "Logging > Non-printable
     # characters" section in HAProxy documentation.
     #
-    # @param [String] string
-    # @return [String]
+    # @param string [String] string to unescape
+    # @return [String] an unescaped string
     def unescape(string)
       string.gsub(/#[[:xdigit:]]{2}/) do |match|
         match[1..-1].to_i(16).chr
@@ -69,7 +69,7 @@ module HAProxyLogParser
 
     # Converts the value of an accept_date field to a Time object.
     #
-    # @param [String] string
+    # @param string [String] value of an accept_date field
     # @return [Time]
     def parse_accept_date(string)
       parts = string.split(/[\/:.]/)
@@ -78,8 +78,10 @@ module HAProxyLogParser
 
     # Converts a captured cookie string to a Hash.
     #
-    # @param [String] string
+    # @param string [String] a captured cookie string
     # @return [Hash{String => String}]
+    #   a one-entry Hash with the cookie name and value, or an empty Hash if no
+    #   cookie was captured
     def decode_captured_cookie(string)
       if string == '-'
         {}
@@ -91,8 +93,8 @@ module HAProxyLogParser
 
     # Converts a captured headers string to an Array.
     #
-    # @param [String] string
-    # @return [Array<String>]
+    # @param string [String] a captured headers section
+    # @return [Array<String>] array of captured header values
     def decode_captured_headers(string)
       string.split('|', -1).map! { |header| unescape(header) }
     end

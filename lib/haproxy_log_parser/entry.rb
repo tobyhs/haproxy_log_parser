@@ -86,7 +86,7 @@ module HAProxyLogParser
     # @return [String]
     attr_accessor :http_request
 
-    # return [true, false] true if and only if request was SSL
+    # return [Boolean] true if and only if request was SSL
     def ssl?
       @transport_mode == '~'
     end
