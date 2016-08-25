@@ -1,6 +1,6 @@
 require 'haproxy_log_parser'
 
-describe HAProxyLogParser do
+RSpec.describe HAProxyLogParser do
   # TODO Use something better instead of LINES[0], LINES[1], ...
   LINES = IO.readlines(File.join(File.dirname(__FILE__), 'sample.log'))
 
