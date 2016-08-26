@@ -1,8 +1,7 @@
 require 'treetop'
 
 require 'haproxy_log_parser/entry'
-
-Treetop.load(File.expand_path('haproxy_log_parser/line.treetop', File.dirname(__FILE__)))
+require 'haproxy_log_parser/line'
 
 module HAProxyLogParser
   VERSION = IO.read(File.join(File.dirname(__FILE__), '..', 'VERSION')).chomp.freeze
