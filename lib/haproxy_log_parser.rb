@@ -6,17 +6,23 @@ require 'haproxy_log_parser/line'
 module HAProxyLogParser
   VERSION = IO.read(File.join(File.dirname(__FILE__), '..', 'VERSION')).chomp.freeze
 
-  @parser = LineParser.new
+  # Exception for failures when parsing lines
+  class ParseError < ::StandardError; end
 
   class << self
     # Returns an Entry object resulting from the given HAProxy HTTP-format log
-    # +line+, or +nil+ if the +line+ appears to be invalid.
+    # +line+.
     #
     # @param line [String] a line from an HAProxy log
-    # @return [Entry, nil]
+    # @return [Entry]
+    # @raise [ParseError] if the line was not parsed successfully
     def parse(line)
-      result = @parser.parse(line)
-      return nil unless result
+      parser = LineParser.new
+      result = parser.parse(line)
+
+      unless result
+        raise ParseError, parser.failure_reason
+      end
 
       entry = Entry.new
       [

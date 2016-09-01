@@ -67,8 +67,10 @@ RSpec.describe HAProxyLogParser do
       expect(entry.http_request).to eq('GET /images/image.gif HTTP/1.1')
     end
 
-    it 'returns nil if the line is invalid' do
-      expect(HAProxyLogParser.parse('asdf jkl;')).to be_nil
+    it 'raises ParseError if the line is invalid' do
+      line = 'Aug  9 20:30:46 localhost haproxy[2022]: '
+      expect { HAProxyLogParser.parse(line) }.
+        to raise_error(HAProxyLogParser::ParseError)
     end
   end
 end
