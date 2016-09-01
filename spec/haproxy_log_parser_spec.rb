@@ -33,7 +33,7 @@ RSpec.describe HAProxyLogParser do
       expect(entry.backend_queue).to eq(0)
       expect(entry.captured_request_headers).to eq(['www.sytadin.equipement.gouv.fr', '', 'http://trafic.1wt.eu/'])
       expect(entry.captured_response_headers).to eq(['Apache', '230', '', '', 'http://www.sytadin.'])
-      expect(entry.http_request).to eq('GET http://www.sytadin.equipement.gouv.fr/ HTTP/1.1')
+      expect(entry.http_request).to eq('GET / HTTP/1.1')
     end
 
     it 'parses LINES[1] correctly' do
