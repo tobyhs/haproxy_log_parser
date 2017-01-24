@@ -1,12 +1,14 @@
 require 'haproxy_log_parser'
 
 RSpec.describe HAProxyLogParser do
-  # TODO Use something better instead of LINES[0], LINES[1], ...
-  LINES = IO.readlines(File.join(File.dirname(__FILE__), 'sample.log'))
+  LINES = Hash[
+    IO.readlines(File.join(File.dirname(__FILE__), 'sample.log')).
+      map { |line| line.split(',', 2) }
+  ]
 
   describe '.parse' do
-    it 'parses LINE[0] correctly' do
-      entry = HAProxyLogParser.parse(LINES[0])
+    it 'parses the good1 case correctly' do
+      entry = HAProxyLogParser.parse(LINES['good1'])
       expect(entry.client_ip).to eq('10.0.8.2')
       expect(entry.client_port).to eq(34028)
       expect(entry.accept_date).to eq(Time.local(2011, 8, 9, 20, 30, 46, 429))
@@ -36,8 +38,8 @@ RSpec.describe HAProxyLogParser do
       expect(entry.http_request).to eq('GET / HTTP/1.1')
     end
 
-    it 'parses LINES[1] correctly' do
-      entry = HAProxyLogParser.parse(LINES[1])
+    it 'parses the good2 case correctly' do
+      entry = HAProxyLogParser.parse(LINES['good2'])
       expect(entry.client_ip).to eq('192.168.1.215')
       expect(entry.client_port).to eq(50679)
       expect(entry.accept_date).to eq(Time.local(2012, 5, 21, 1, 35, 46, 146))
