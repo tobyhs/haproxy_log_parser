@@ -11,11 +11,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rspec', '~> 3.5.0'
 
-  s.files = Dir.glob('lib/**/*') + [
-    'LICENSE',
-    'README.md',
-    'VERSION',
-    'haproxy_log_parser.gemspec'
-  ]
-  s.test_files = Dir.glob('spec/**/*')
+  s.files = `git ls-files`.split($/)
+  s.test_files = s.files.grep(%r{\Aspec/})
 end
