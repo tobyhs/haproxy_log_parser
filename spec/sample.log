@@ -1,2 +1,3 @@
 good1,Aug  9 20:30:46 localhost haproxy[2022]: 10.0.8.2:34028 [09/Aug/2011:20:30:46.429] proxy-out~ proxy-out/cache1 1/0/2/126/+128 301 +223 - - LR-- 617/523/336/168/0 0/0 {www.sytadin.equipement.gouv.fr||http://trafic.1wt.eu/} {Apache|230|||http://www.sytadin.} "GET / HTTP/1.1"
 good2,May 21 01:35:46 10.18.237.5 haproxy[26747]: 192.168.1.215:50679 [21/May/2012:01:35:46.146] webapp webapp_backend/web09 27/0/1/0/217 200 1367 session=abc session=xyz ---- 600/529/336/158/0 0/0 {#7C#7C #7B5F41#7D|http://google.com/|} "GET /images/image.gif HTTP/1.1"
+error1,Dec  3 18:27:14 localhost haproxy[6103]: 127.0.0.1:56059 [03/Dec/2012:17:35:10.380] frt/f1: Connection error during SSL handshake

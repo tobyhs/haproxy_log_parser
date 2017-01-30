@@ -69,6 +69,16 @@ RSpec.describe HAProxyLogParser do
       expect(entry.http_request).to eq('GET /images/image.gif HTTP/1.1')
     end
 
+    it 'parses connection error lines correctly' do
+      entry = HAProxyLogParser.parse(LINES['error1'])
+      expect(entry.client_ip).to eq('127.0.0.1')
+      expect(entry.client_port).to eq(56059)
+      expect(entry.accept_date).to eq(Time.local(2012, 12, 3, 17, 35, 10, 380))
+      expect(entry.frontend_name).to eq('frt')
+      expect(entry.bind_name).to eq('f1')
+      expect(entry.message).to eq('Connection error during SSL handshake')
+    end
+
     it 'raises ParseError if the line is invalid' do
       line = 'Aug  9 20:30:46 localhost haproxy[2022]: '
       expect { HAProxyLogParser.parse(line) }.
