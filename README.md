@@ -1,6 +1,9 @@
 # haproxy\_log\_parser
 
 haproxy\_log\_parser is a gem that parses logs in HAProxy's HTTP log format.
+Use `HAProxyLogParser.parse` to parse a line; this will return an
+`HAProxyLogParser::Entry` for normal lines and `HAProxyLogParser::ErrorEntry`
+for connection error lines.
 
 Example:
 

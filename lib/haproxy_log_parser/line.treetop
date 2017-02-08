@@ -4,6 +4,11 @@ module HAProxyLogParser
       syslog_portion:([^\[]+ '[' integer ']: ')
       client_ip:ip4_address ':' client_port:integer ' '
       '[' accept_date '] '
+      suffix:(normal_suffix / error_suffix)
+      "\n"?
+    end
+
+    rule normal_suffix
       frontend_name:proxy_name transport_mode:'~'? ' '
       backend_name:proxy_name '/' server_name ' '
       tq:integer '/' tw:integer '/' tc:integer '/' tr:integer '/' tt:integer ' '
@@ -18,7 +23,11 @@ module HAProxyLogParser
       captured_request_headers:('{' headers:captured_headers '} ')?
       captured_response_headers:('{' headers:captured_headers '} ')?
       '"' http_request:[^"]+ '"'
-      "\n"?
+    end
+
+    rule error_suffix
+      frontend_name:proxy_name '/' bind_name ': '
+      message:[^\n]+
     end
 
     rule integer
@@ -51,6 +60,10 @@ module HAProxyLogParser
 
     rule captured_headers
       [^}]*
+    end
+
+    rule bind_name
+      [-_A-Za-z0-9.]+
     end
   end
 end

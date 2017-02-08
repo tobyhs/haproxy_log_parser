@@ -1,6 +1,7 @@
 require 'treetop'
 
 require 'haproxy_log_parser/entry'
+require 'haproxy_log_parser/error_entry'
 require 'haproxy_log_parser/line'
 
 module HAProxyLogParser
@@ -10,11 +11,11 @@ module HAProxyLogParser
   class ParseError < ::StandardError; end
 
   class << self
-    # Returns an Entry object resulting from the given HAProxy HTTP-format log
-    # +line+.
+    # Returns an Entry or ErrorEntry object resulting from the given HAProxy
+    # HTTP-format log +line+.
     #
     # @param line [String] a line from an HAProxy log
-    # @return [Entry]
+    # @return [Entry, ErrorEntry]
     # @raise [ParseError] if the line was not parsed successfully
     def parse(line)
       parser = LineParser.new
@@ -24,39 +25,15 @@ module HAProxyLogParser
         raise ParseError, parser.failure_reason
       end
 
-      entry = Entry.new
-      [
-        :client_ip, :frontend_name, :transport_mode,
-        :backend_name, :server_name, :termination_state
-      ].each do |field|
-        entry.send("#{field}=", result.send(field).text_value)
-      end
-      [
-        :client_port, :tq, :tw, :tc, :tr, :tt, :status_code, :bytes_read,
-        :actconn, :feconn, :beconn, :srv_conn, :retries, :srv_queue,
-        :backend_queue
-      ].each do |field|
-        entry.send("#{field}=", result.send(field).text_value.to_i)
-      end
-
-      entry.accept_date = parse_accept_date(result.accept_date.text_value)
-      [:captured_request_cookie, :captured_response_cookie].each do |field|
-        cookie = decode_captured_cookie(result.send(field).text_value)
-        entry.send("#{field}=", cookie)
-      end
-
-      [:captured_request_headers, :captured_response_headers].each do |field|
-        if result.send(field).respond_to?(:headers)
-          headers = decode_captured_headers(
-            result.send(field).headers.text_value
-          )
+      entry =
+        if result.suffix.respond_to?(:http_request)
+          create_normal_entry(result.suffix)
         else
-          headers = []
+          create_error_entry(result.suffix)
         end
-        entry.send("#{field}=", headers)
-      end
-
-      entry.http_request = unescape(result.http_request.text_value)
+      entry.client_ip = result.client_ip.text_value
+      entry.client_port = result.client_port.text_value.to_i
+      entry.accept_date = parse_accept_date(result.accept_date.text_value)
 
       entry
     end
@@ -102,6 +79,59 @@ module HAProxyLogParser
     # @return [Array<String>] array of captured header values
     def decode_captured_headers(string)
       string.split('|', -1).map! { |header| unescape(header) }
+    end
+
+    private
+
+    # @param result [Treetop::Runtime::SyntaxNode]
+    # @return [Entry]
+    def create_normal_entry(result)
+      entry = Entry.new
+
+      %i(
+        frontend_name transport_mode
+        backend_name server_name termination_state
+      ).each do |field|
+        entry.send("#{field}=", result.send(field).text_value)
+      end
+
+      %i(
+        tq tw tc tr tt status_code bytes_read
+        actconn feconn beconn srv_conn retries srv_queue backend_queue
+      ).each do |field|
+        entry.send("#{field}=", result.send(field).text_value.to_i)
+      end
+
+      %i(captured_request_cookie captured_response_cookie).each do |field|
+        cookie = decode_captured_cookie(result.send(field).text_value)
+        entry.send("#{field}=", cookie)
+      end
+
+      %i(captured_request_headers captured_response_headers).each do |field|
+        if result.send(field).respond_to?(:headers)
+          headers = decode_captured_headers(
+            result.send(field).headers.text_value
+          )
+        else
+          headers = []
+        end
+        entry.send("#{field}=", headers)
+      end
+
+      entry.http_request = unescape(result.http_request.text_value)
+      entry
+    end
+
+    # @param result [Treetop::Runtime::SyntaxNode]
+    # @return [ErrorEntry]
+    def create_error_entry(result)
+      entry = ErrorEntry.new
+
+      %i(frontend_name bind_name message).each do |field|
+        entry.send("#{field}=", result.send(field).text_value)
+      end
+
+      entry
     end
   end
 end
