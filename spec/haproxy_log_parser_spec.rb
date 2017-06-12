@@ -6,6 +6,9 @@ RSpec.describe HAProxyLogParser do
       map { |line| line.split(',', 2) }
   ]
 
+  TEST_IP_ADDRESSES = IO.readlines(File.join(File.dirname(__FILE__), 'test_ips.log')).
+      map { |line| line.chomp }
+
   describe '.parse' do
     it 'parses the good1 case correctly' do
       entry = HAProxyLogParser.parse(LINES['good1'])
@@ -67,6 +70,39 @@ RSpec.describe HAProxyLogParser do
       expect(entry.captured_request_headers).to eq(['|| {5F41}', 'http://google.com/', ''])
       expect(entry.captured_response_headers).to eq([])
       expect(entry.http_request).to eq('GET /images/image.gif HTTP/1.1')
+    end
+
+    TEST_IP_ADDRESSES.each do |test_ip|
+      it "parses generic case with test IP #{test_ip} correctly" do
+        entry = HAProxyLogParser.parse(LINES['generic_ip_test'].sub(/IPADDRESS/, test_ip))
+        expect(entry.client_ip).to eq(test_ip)
+        expect(entry.client_port).to eq(50679)
+        expect(entry.accept_date).to eq(Time.local(2012, 5, 21, 1, 35, 46, 146))
+        expect(entry.frontend_name).to eq('webapp')
+        expect(entry).to_not be_ssl
+        expect(entry.backend_name).to eq('webapp_backend')
+        expect(entry.server_name).to eq('web09')
+        expect(entry.tq).to eq(27)
+        expect(entry.tw).to eq(0)
+        expect(entry.tc).to eq(1)
+        expect(entry.tr).to eq(0)
+        expect(entry.tt).to eq(217)
+        expect(entry.status_code).to eq(200)
+        expect(entry.bytes_read).to eq(1367)
+        expect(entry.captured_request_cookie).to eq({'session' => 'abc'})
+        expect(entry.captured_response_cookie).to eq({'session' => 'xyz'})
+        expect(entry.termination_state).to eq('----')
+        expect(entry.actconn).to eq(600)
+        expect(entry.feconn).to eq(529)
+        expect(entry.beconn).to eq(336)
+        expect(entry.srv_conn).to eq(158)
+        expect(entry.retries).to eq(0)
+        expect(entry.srv_queue).to eq(0)
+        expect(entry.backend_queue).to eq(0)
+        expect(entry.captured_request_headers).to eq(['|| {5F41}', 'http://google.com/', ''])
+        expect(entry.captured_response_headers).to eq([])
+        expect(entry.http_request).to eq('GET /images/image.gif HTTP/1.1')
+      end
     end
 
     it 'parses connection error lines correctly' do
