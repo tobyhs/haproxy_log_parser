@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.description = s.summary
   s.license = 'MIT'
 
-  s.add_dependency 'treetop'
+  s.add_dependency 'treetop', '~> 1.6'
 
   s.add_development_dependency 'rspec', '~> 3.5.0'
 
